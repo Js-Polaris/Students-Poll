@@ -3,14 +3,14 @@ from django.contrib import admin
 from .models import Announcement, Category, Notice
 
 
-@admin.register(Category)
+@admin.register(Category) 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name',)
 
 
-@admin.register(Announcement)
+@admin.register(Announcement) 
 class AnnouncementAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'author', 'published_at', 'expires_at', 'moderation_status', 'display_status')
     list_filter = ('moderation_status', 'category', 'published_at', 'expires_at')
