@@ -7,18 +7,18 @@ from django.utils.text import slugify
 class Category(models.Model):
     """Groups announcements/opportunities into clear sections (e.g. Academic Updates, Events)."""
 
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=120, unique=True, blank=True)
+    name = models.CharField(max_length=100, unique=True)##django string field that maps to a varchar column in the sql db.
+    slug = models.SlugField(max_length=120, unique=True, blank=True) # the slug is a URL-friendly version of the category name, automatically generated from the name if not provided.
     description = models.TextField(blank=True)
 
-    class Meta:
+    class Meta: # the Meta class is used to define metadata for the model, such as ordering and verbose name plural.
         ordering = ['name']
         verbose_name_plural = 'Categories'
 
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs): # the save method is overridden to automatically generate a slug from the name if it is not provided. This ensures that each category has a unique and URL-friendly identifier.
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
@@ -31,28 +31,31 @@ class Announcement(models.Model):
     (removed from active feeds, available in archive) based on date comparison.
     """
 
-    class ModerationStatus(models.TextChoices):
+    class ModerationStatus(models.TextChoices): # 
         PENDING = 'pending', 'Pending approval'
         APPROVED = 'approved', 'Active'  # approved and not expired => active
         REJECTED = 'rejected', 'Rejected'
 
     title = models.CharField(max_length=200)
+    ##charfield is used for short strings such as titles 
     content = models.TextField()
-    category = models.ForeignKey(
+    ##textfield is used for longer text such as the content of the announcement
+    # the category is a foreign key to the Category model, which allows each announcement to be associated with a specific category.  The related_name='announcements' option allows for reverse querying from the Category model to get all announcements associated with that category.
+    category = models.ForeignKey(  
         Category,
-        on_delete=models.PROTECT,
-        related_name='announcements',
-    )
-    author = models.ForeignKey(
+        on_delete=models.PROTECT,  #The on_delete=models.PROTECT option ensures that if a category is deleted, any associated announcements will not be deleted, and an error will be raised instead.
+        related_name='announcements', # allows reverse querying from Category to get all associated announcements
+    ) 
+    # the author is a foreign key to the user model defined in the Django settings, allowing each announcement to be associated with a specific user. 
+    author = models.ForeignKey(  
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE, #The on_delete=models.CASCADE option ensures that if a user is deleted, any associated announcements will also be deleted.
         related_name='announcements',
     )
     published_at = models.DateTimeField(default=timezone.now)
     expires_at = models.DateTimeField()
-    # Using FileField for now so migrations can run without Pillow installed.
-    # Can be changed to ImageField later (requires Pillow) when image validation/processing is needed.
-    image = models.FileField(upload_to='announcements/', blank=True, null=True)
+    image = models.FileField(upload_to='announcements/', blank=True, null=True) # the blank=True and null=True options allow the image field to be optional, meaning that announcements can be created without an associated image.
+    # m
     moderation_status = models.CharField(
         max_length=20,
         choices=ModerationStatus.choices,
@@ -84,7 +87,7 @@ class Announcement(models.Model):
     def is_rejected(self):
         return self.moderation_status == self.ModerationStatus.REJECTED
 
-    @property
+    @property 
     def is_active_item(self):
         """Active feed item: approved, published, and not expired."""
         return self.is_approved and (not self.is_expired) and self.published_at <= timezone.now()
