@@ -1,0 +1,22 @@
+{% extends 'notices/base.html' %}
+
+{% block title %}Edit Profile | Campus Connect{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 720px;">
+    <h2>Edit Profile</h2>
+    <p class="meta">Update your account details and campus profile information. Your role (Student / Authorized Publisher) is managed by administrators.</p>
+
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        <h3>Account details</h3>
+        {{ u_form.as_p }}
+
+        <h3>Campus profile</h3>
+        {{ p_form.as_p }}
+
+        <button type="submit" class="btn">Save changes</button>
+        <a class="btn btn-secondary" href="{% url 'profile' %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

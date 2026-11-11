@@ -1,0 +1,31 @@
+{% extends 'notices/base.html' %}
+
+{% block title %}{{ announcement.title }} | Campus Connect{% endblock %}
+
+{% block content %}
+<p><a href="{% url 'notice_list' %}">&larr; Back to Home</a> &nbsp;|&nbsp; <a href="{% url 'archive' %}">Archive</a></p>
+
+<article class="card">
+    <h2>{{ announcement.title }}</h2>
+    <p class="meta">
+        Category: <strong>{{ announcement.category.name }}</strong><br>
+        Publisher: {{ announcement.author.username }}<br>
+        Published: {{ announcement.published_at }}<br>
+        Expires: {{ announcement.expires_at }}<br>
+        Status:
+        {% if announcement.display_status == 'Active' %}
+            <span class="badge badge-current">Active</span>
+        {% elif announcement.display_status == 'Expired' %}
+            <span class="badge badge-late">Expired</span>
+        {% elif announcement.display_status == 'Pending approval' %}
+            <span class="badge badge-info">Pending approval</span>
+        {% else %}
+            <span class="badge badge-info">{{ announcement.display_status }}</span>
+        {% endif %}
+    </p>
+    {% if announcement.image %}
+        <p><a href="{{ announcement.image.url }}">View attached file/poster</a></p>
+    {% endif %}
+    <div>{{ announcement.content|linebreaks }}</div>
+</article>
+{% endblock %}

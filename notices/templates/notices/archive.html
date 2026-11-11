@@ -1,0 +1,28 @@
+{% extends 'notices/base.html' %}
+
+{% block title %}Archive | Campus Connect{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h2>Archive</h2>
+    <p>Expired announcements are automatically removed from the active feed but remain accessible here.</p>
+</section>
+
+{% for announcement in announcements %}
+    <article class="card">
+        <h3><a href="{% url 'notice_detail' announcement.pk %}">{{ announcement.title }}</a></h3>
+        <p class="meta">
+            Category: <strong>{{ announcement.category.name }}</strong> &nbsp;|&nbsp;
+            Publisher: {{ announcement.author.username }} &nbsp;|&nbsp;
+            Published: {{ announcement.published_at }} &nbsp;|&nbsp;
+            Expired: {{ announcement.expires_at }} &nbsp;|&nbsp;
+            <span class="badge badge-late">Expired</span>
+        </p>
+        <p>{{ announcement.content|truncatewords:30 }}</p>
+    </article>
+{% empty %}
+    <div class="card">
+        <p>No archived (expired) announcements yet.</p>
+    </div>
+{% endfor %}
+{% endblock %}

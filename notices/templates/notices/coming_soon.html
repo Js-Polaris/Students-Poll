@@ -1,0 +1,12 @@
+{% extends 'notices/base.html' %}
+
+{% block title %}{{ section_title }} | Campus Connect{% endblock %}
+
+{% block content %}
+<div class="card">
+    <p class="meta"><span class="badge badge-info">Planned section</span></p>
+    <h2>{{ section_title }}</h2>
+    <p>This section is part of the Campus Connect vision and will be built in an upcoming development stage (with its own models, views, templates, and permissions as needed).</p>
+    <p class="meta">For now, you can return to <a href="{% url 'notice_list' %}">Home</a> to view the current updates feed.</p>
+</div>
+{% endblock %}

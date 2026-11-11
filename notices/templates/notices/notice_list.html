@@ -1,0 +1,32 @@
+{% extends 'notices/base.html' %}
+
+{% block title %}Home | Campus Connect{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h2>What’s happening around campus?</h2>
+    <p>Stay informed with campus news, announcements, academic updates, events, and opportunities. Expired items automatically leave the active feed and remain available in the <a href="{% url 'archive' %}" style="color:#fff; text-decoration:underline;">Archive</a>.</p>
+</section>
+
+<h2>Active Updates</h2>
+<p class="meta">Showing approved announcements that are published and not expired. (Stage 3: Category &amp; Announcement models, automatic expiry/archiving logic, and sample records.)</p>
+
+{% for announcement in announcements %}
+    <article class="card">
+        <h3><a href="{% url 'notice_detail' announcement.pk %}">{{ announcement.title }}</a></h3>
+        <p class="meta">
+            Category: <strong>{{ announcement.category.name }}</strong> &nbsp;|&nbsp;
+            Publisher: {{ announcement.author.username }} &nbsp;|&nbsp;
+            Published: {{ announcement.published_at }} &nbsp;|&nbsp;
+            Expires: {{ announcement.expires_at }} &nbsp;|&nbsp;
+            <span class="badge badge-current">{{ announcement.display_status }}</span>
+        </p>
+        <p>{{ announcement.content|truncatewords:35 }}</p>
+        <p><a class="btn" href="{% url 'notice_detail' announcement.pk %}">View details</a></p>
+    </article>
+{% empty %}
+    <div class="card">
+        <p>No active updates right now. Check the <a href="{% url 'archive' %}">Archive</a> for past items.</p>
+    </div>
+{% endfor %}
+{% endblock %}

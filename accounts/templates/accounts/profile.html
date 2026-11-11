@@ -1,0 +1,27 @@
+{% extends 'notices/base.html' %}
+
+{% block title %}My Profile | Campus Connect{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>My Profile</h2>
+    <p class="meta">Account and role information for Campus Connect.</p>
+
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}{% if not user.first_name and not user.last_name %}<span class="meta">(not set)</span>{% endif %}</p>
+    <p><strong>Email:</strong> {{ user.email|default:"(not set)" }}</p>
+    <p><strong>Role:</strong> <span class="badge badge-info">{{ profile.get_role_display }}</span></p>
+    <p><strong>Department:</strong> {{ profile.department|default:"(not set)" }}</p>
+    <p><strong>Bio:</strong><br>{{ profile.bio|default:"(not set)"|linebreaksbr }}</p>
+
+    <p style="margin-top:1rem;">
+        <a class="btn" href="{% url 'profile_edit' %}">Edit profile</a>
+    </p>
+</div>
+
+<div class="card">
+    <h3>My Posts &amp; Activity</h3>
+    <p class="meta">Viewing and managing posts you have published will be added in a later stage (when announcements/opportunities posting is implemented). Authorized publishing permissions depend on your role and admin approval.</p>
+    <p><a href="{% url 'coming_soon' 'my-posts' %}">Go to My Posts (placeholder)</a></p>
+</div>
+{% endblock %}
